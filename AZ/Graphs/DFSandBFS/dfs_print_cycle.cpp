@@ -1,69 +1,44 @@
-#include <bits/stdc++.h>
+#include<bits/stdc++.h>
 using namespace std;
-using ll=long long ;
-#define all(x) (x).begin(),(x).end()
-#define rall(v) v.rbegin(),v.rend()
-#define IOS ios::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-#define sz(x) (int)(x.size())
-#define db(...) ZZ(#__VA_ARGS__, __VA_ARGS__)
-template <typename Arg1> void ZZ(const char* name, Arg1&& arg1){std::cerr << name << '=' << arg1 << endl;}
-template <typename Arg1, typename... Args>void ZZ(const char* names, Arg1&& arg1, Args&&... args)
-
-{
-const char* comma = strchr(names + 1, ',');
-std::cerr.write(names, comma - names) << '=' << arg1;
-ZZ(comma, args...);
-}
-
-const int mod=(int)(1e9)+7;
-const int inf=(int)(2e9);
-const int N = (int)(1e5 + 10);
-vector<int> adj[N];
-bool is_cycle=false;
-stack<int> psf;
+using ll=long long;
+const int INF=(int)2e9;
+const int N=(int)(1e5)+10;
 int vis[N];
-void dfs(int node, int par){
-    vis[node]=1;
-    psf.push(node);
-    for(int nb:adj[node]){
-        if(!vis[nb]){
-            dfs(nb,node);
-            psf.pop();
+vector<vector<int> > cycles;
+void DFS(int src,vector<int> &path,vector<vector<int> > &adj){
+    vis[src]=1;
+    path.push_back(src);
+    for(int neib:adj[src]){
+        if(!vis[neib]){
+            DFS(neib,path,adj);
         }
-        else if(nb!=par){
-            //cycle is found
-            
+        //Found back edge means cycle is present here
+        else if(vis[neib]==1){
+            cycles.push_back(path);
         }
     }
+    vis[src]=2;
+    path.pop_back();
 }
+int main(){
+   int n,m;
+   cin>>n>>m;
+   vector<vector<int> > adj(n+1);
+   for(int i=0;i<m;i++){
+        int u,v;
+        cin>>u>>v;
+        adj[u].push_back(v);
+   }
+   vector<int> path;
+   DFS(1,path,adj);
+   int cycle_cnt=1;
+   for(vector<int> cycle:cycles){
+     cout<<"Found cycle number: "<<cycle_cnt<<'\n';
+        for(int node:cycle){
+            cout<<node<<" ->";
+        }
+        cout<<'\n';
+        cycle_cnt++;
+   }
 
-
-void testCases() {
-       int n,m;
-       cin>>n>>m;
-       for(int i=1;i<=m;i++){
-         int a,b;
-         adj[a].push_back(b);
-         adj[b].push_back(a);
-       }
-}
-
-int32_t main()
-{
-IOS;
-#ifndef ONLINE_JUDGE
-   freopen("in.txt","r",stdin);
-   freopen("out.txt","w",stdout);
-#endif
-// comment for single Test Case
-int t=1;
-//  cin>>t;
- for(int T=1;T<=t;T++)
- {
-
-   // cout << "Case #" << T << ": ";
-   testCases();
-}
-
-return 0;
 }
