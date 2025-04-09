@@ -14,9 +14,13 @@ void DFS(int src,vector<int> &path,vector<vector<int> > &adj){
         }
         //Found back edge means cycle is present here
         else if(vis[neib]==1){
-            cycles.push_back(path);
+            auto it=find(path.begin(),path.end(),neib);
+            vector<int> cur_cycle(it,path.end());
+            cycles.push_back(cur_cycle);
         }
     }
+    // Mark this Node as 2 as all of its niegbhours are explore
+    // Form here no furhter back edges will be there
     vis[src]=2;
     path.pop_back();
 }
